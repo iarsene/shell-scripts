@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#test commit
+
 fileToMerge=dstAnalysisHistograms.root
 
 runs=`cat $1`
