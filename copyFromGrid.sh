@@ -12,8 +12,19 @@ for run in $runList; do
    echo "Copying $nchunks files for run $run from grid"
    chunkList=`cat $outDir/$run/chunkList.txt`
    for chunk in $chunkList; do
+   
+      while [ $(ps -ef | grep alien_cp | wc -l) -gt 20 ]; do
+        sleep 5s;
+      done
+    
       mkdir -p $outDir/$run/$chunk
-      alien_cp alien://$alienHomeDir/$inputDir/$run/$chunk/dstTree.root $outDir/$run/$chunk/
+      echo "Copy chunk $chunk"
+      if [ -s $outDir/$run/$chunk/dstTree.root ]
+      then
+         echo "    -->  Chunk exists already"
+      else
+         alien_cp alien://$alienHomeDir/$inputDir/$run/$chunk/dstTree.root $outDir/$run/$chunk/  &
+      fi
    done
 done
    
