@@ -1,26 +1,30 @@
 #!/bin/bash
 
-fileToMerge=dstTree.root
-
-runs=`cat $1`
-inputDir=$2
-deletePartialOutputs=$3
+fileToMerge=$1
+nChunksToMerge=$2
+inputDir=$3
+runs=`cat $4`
 
 for run in $runs; do
    echo "Merging run $run --------------------------------"
    chunks=`find $inputDir/$run/ -name $fileToMerge`
-   echo "Chunks: $chunks"
-   if [ -s $inputDir/$run/$fileToMerge ]
-      then
-         echo "    --> Already merged"
-      else
-         hadd $inputDir/$run/$fileToMerge $chunks
-   fi
-   
-   mkdir -p $inputDir/$run/chunk1
-   mv $inputDir/$run/$fileToMerge $inputDir/$run/chunk1/
-   
-   if [ "$deletePartialOutputs" = "yes"  ]; then
-      rm -r $inputDir/$run/[0-9][0-9][0-9]/
+   currentChunk=1
+   currentMergedChunk=1
+   buffer=""
+   for chunk in $chunks; do
+      buffer=`printf "$buffer\n$chunk"`
+      let "val=$currentChunk%$nChunksToMerge"
+      if [ $val -eq 0 ]; then
+         mkdir -p $inputDir/$run/chunk$currentMergedChunk
+         hadd $inputDir/$run/chunk$currentMergedChunk/$fileToMerge $buffer
+         buffer="" 
+         let currentMergedChunk=currentMergedChunk+1
+         echo "================================================================="
+      fi   
+      let currentChunk=currentChunk+1
+   done
+   if [ "$buffer" != "" ]; then
+      mkdir -p $inputDir/$run/chunk$currentMergedChunk
+      hadd $inputDir/$run/chunk$currentMergedChunk/$fileToMerge $buffer
    fi
 done

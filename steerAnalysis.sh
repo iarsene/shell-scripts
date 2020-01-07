@@ -26,7 +26,6 @@ mkdir -p $outputDir/jobInputs
 jobCounter=0
 for run in $runs; do
    chunks=`find $inputDir/$run -name dstTree.root | grep chunk`
-   #chunks=`find $inputDir/$run -name dstTree.root`
    currentNfiles=0
    chunksForJob=''
    for chunk in $chunks; do
@@ -73,5 +72,5 @@ workDir=$PWD
 mkdir -p $outputDir/nohupOutput
 for i in `seq 1 $nworkers`; do
 #   nohup $workDir/runAnalysis.sh $outputDir/jobInputs/jobList.wn$i.txt $inputDir $outputDir $nChunksPerJob $hasMC > $outputDir/nohupOutput/worker$i.out &
-   nohup runAnalysis.sh $outputDir/jobInputs/jobList.wn$i.txt $inputDir $outputDir $nChunksPerJob $hasMC $inputType $eventType $period $tasks > $outputDir/nohupOutput/worker$i.out $nworkers &
+   nohup runAnalysis.sh $outputDir/jobInputs/jobList.wn$i.txt $inputDir $outputDir $nChunksPerJob $hasMC $inputType $eventType $period $tasks $nworkers $treeFilename > $outputDir/nohupOutput/worker$i.out  &
 done

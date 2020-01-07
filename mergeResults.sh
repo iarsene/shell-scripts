@@ -21,7 +21,7 @@ for run in $runs; do
    chunks=`find $inputDir/runOutput/$run/ -name $fileToMerge`
    hadd $inputDir/runOutput/$run/$fileToMerge $chunks
    if [ "$deletePartialOutputs" = "yes"  ]; then
-      rm -r $inputDir/runOutput/$run/job*
+      rm -r $inputDir/runOutput/$run/job*/$fileToMerge
    fi
    runMergedFiles=`printf "$runMergedFiles $inputDir/runOutput/$run/$fileToMerge"`
 done

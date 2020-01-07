@@ -13,7 +13,7 @@ for run in $runList; do
    chunkList=`cat $outDir/$run/chunkList.txt`
    for chunk in $chunkList; do
    
-      while [ $(ps -ef | grep alien_cp | wc -l) -gt 20 ]; do
+      while [ $(ps -ef | grep alien_cp | wc -l) -gt 30 ]; do
         sleep 5s;
       done
     
